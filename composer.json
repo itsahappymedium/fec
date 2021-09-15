@@ -1,0 +1,33 @@
+{
+  "name": "itsahappymedium/fec",
+  "description": "A PHP Command Line tool that makes it easy to compile, concat, and minify front-end Javascript and CSS/SCSS dependencies.",
+  "keywords": [
+    "cli",
+    "css",
+    "compile",
+    "front",
+    "end",
+    "minify",
+    "javascript",
+    "js",
+    "scss"
+  ],
+  "authors": [
+    {
+      "name": "Happy Medium",
+      "email": "developers@itsahappymedium.com",
+      "homepage": "https://itsahappymedium.com"
+    }
+  ],
+  "homepage": "https://github.com/itsahappymedium/fec",
+  "license": "MIT",
+  "bin": [
+    "bin/fec"
+  ],
+  "require": {
+    "php": "^7.3|^8.0",
+    "matthiasmullie/minify": "^1.3",
+    "scssphp/scssphp": "^1.6",
+    "splitbrain/php-cli": "^1.1"
+  }
+}

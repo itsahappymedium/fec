@@ -1,0 +1,7 @@
+.DS_Store
+/vendor
+/gpm_modules
+/gpm.json
+/fec.json
+/test_assets
+/test_build
