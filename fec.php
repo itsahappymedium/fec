@@ -13,23 +13,35 @@ class FEC extends CLI {
 
   protected function main($options) {
     $files = $options->getArgs();
+    $path_opt = $options->getOpt('path');
+    $path = '.';
+    $json_file = null;
     $css_files = array();
     $js_files = array();
 
+    if ($path_opt) {
+      if (file_exists($path_opt) && is_dir($path_opt)) {
+        $path = rtrim($path_opt, '/');
+      } else {
+        $path = dirname($path_opt);
+        $json_file = $path_opt;
+      }
+    }
+
     if (empty($files)) {
-      if ($path = $options->getOpt('path')) {
-        if (file_exists($path)) {
-          $json = @file_get_contents($path);
+      if ($json_file) {
+        if (file_exists($json_file)) {
+          $json = @file_get_contents($json_file);
         } else {
-          $this->print("<lightred>Error</lightred>: Could not find <yellow>$path</yellow>.");
+          $this->print("<lightred>Error</lightred>: Could not find <yellow>$json_file</yellow>.");
           return;
         }
-      } elseif (file_exists("./fec.json")) {
-        $json = @file_get_contents("./fec.json");
-      } elseif (file_exists("./gpm.json")) {
-        $json = @file_get_contents("./gpm.json");
+      } elseif (file_exists("$path/fec.json")) {
+        $json = @file_get_contents("$path/fec.json");
+      } elseif (file_exists("$path/gpm.json")) {
+        $json = @file_get_contents("$path/gpm.json");
       } else {
-        $this->print("<lightred>Error</lightred>: Could not find <yellow>fec.json</yellow> or <yellow>gpm.json</yellow>.");
+        $this->print("<lightred>Error</lightred>: Could not find <yellow>$path/fec.json</yellow> or <yellow>$path/gpm.json</yellow>.");
         return;
       }
 
@@ -56,7 +68,9 @@ class FEC extends CLI {
         $css_files[$css_dest_file] = $css_source_files;
       } else {
         foreach($css_source_files as $css_source_file) {
-          foreach(glob($css_source_file) as $file) {
+          $files = glob("$path/" . preg_replace('/^\.?\//', '', $css_source_file));
+
+          foreach($files as $file) {
             $dest = preg_replace('/\.s?css$/', '.min.css', $file);
             $css_files[$dest] = $file;
           }
@@ -71,7 +85,9 @@ class FEC extends CLI {
         $js_files[$js_dest_file] = $js_source_files;
       } else {
         foreach($js_source_files as $js_source_file) {
-          foreach(glob($js_source_file) as $file) {
+          $files = glob("$path/" . preg_replace('/^\.?\//', '', $js_source_file));
+
+          foreach($files as $file) {
             $dest = preg_replace('/\.js$/', '.min.js', $file);
             $js_files[$dest] = $file;
           }
@@ -83,8 +99,12 @@ class FEC extends CLI {
       foreach($css_files as $dest => $sources) {
         $css_minifier = new Minify\CSS();
 
+        if (!is_array($sources)) $sources = array($sources);
+
         foreach($sources as $source) {
-          foreach(glob($source) as $file) {
+          $files = glob("$path/" . preg_replace('/^\.?\//', '', $source));
+
+          foreach($files as $file) {
             if (substr(basename($file), 0, 1) === '_') continue;
 
             $this->print(" - <purple>Loading</purple> <brown>$file</brown>...");
@@ -93,9 +113,10 @@ class FEC extends CLI {
 
             if ($ext === 'scss') {
               $scss_compiler = new ScssCompiler();
+              $scss_compiler->setImportPaths(array(dirname($file)));
               $scss = file_get_contents($file);
-              $scss_compiler->addImportPath(dirname($file));
               $css = $scss_compiler->compileString($scss)->getCss();
+
               $css_minifier->add($css);
             } else {
               $css_minifier->add($file);
@@ -103,6 +124,7 @@ class FEC extends CLI {
           }
         }
 
+        $dest = "$path/$dest";
         $this->print(" - <cyan>Minifying</cyan> <brown>$dest</brown>...");
         $css_minifier->minify($dest);
       }
@@ -112,13 +134,18 @@ class FEC extends CLI {
       foreach($js_files as $dest => $sources) {
         $js_minifier = new Minify\JS();
 
+        if (!is_array($sources)) $sources = array($sources);
+
         foreach($sources as $source) {
-          foreach(glob($source) as $file) {
+          $files = glob("$path/" . preg_replace('/^\.?\//', '', $source));
+
+          foreach($files as $file) {
             $this->print(" - <purple>Loading</purple> <brown>$file</brown>...");
             $js_minifier->add($file);
           }
         }
 
+        $dest = "$path/$dest";
         $this->print(" - <cyan>Minifying</cyan> <brown>$dest</brown>...");
         $js_minifier->minify($dest);
       }
