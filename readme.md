@@ -51,13 +51,14 @@ Running FEC without any arguments will load files from a `fec.json` file (and if
 }
 ```
 
-The `--path` or `-p` option can be passed to define a JSON file to load a file list from.
+The `--path` or `-p` option can be passed to define a JSON file or a directory path to where a `fec.json` or `gpm.json` file is located to load a file list from.
 
 File paths can be passed to FEC to compile those specific files.
 
 The `--css-output` or `-c` option can be passed to define the file where CSS/SCSS input files will be concated and minified into otherwise if this option isn't used, CSS/SCSS files will all be concated and minified into their own individual filenames with their extension changed to `.min.css`.
 
 The `--js-output` or `-j` option can be passed to define the file where JavaScript input files will be concated and minified into otherwise if this option isn't used, JavaScript files will all be concated and minified into their own individual filenames with their extension changed to `.min.js`.
+
 
 ### Examples
 
@@ -66,6 +67,12 @@ fec --js-output build/main.min.js js/*.js
 
 fec --css-output build/main.min.css --js-output build/main.min.js scss/*.scss js/*.js
 ```
+
+
+## Related
+
+ - [GPM](https://github.com/itsahappymedium/gpm) - A PHP Command Line tool that makes it easy to download dependencies from GitHub.
+
 
 ## License
 
