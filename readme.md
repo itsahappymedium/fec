@@ -59,6 +59,8 @@ The `--css-output` or `-c` option can be passed to define the file where CSS/SCS
 
 The `--js-output` or `-j` option can be passed to define the file where JavaScript input files will be concated and minified into otherwise if this option isn't used, JavaScript files will all be concated and minified into their own individual filenames with their extension changed to `.min.js`.
 
+The `--scss-import-path` or `-s` option can be passed to include additional directory paths to locate imported SCSS files. Separate multiple directories with a comma (,).
+
 
 ### Examples
 

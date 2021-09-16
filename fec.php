@@ -6,14 +6,17 @@ use splitbrain\phpcli\CLI;
 class FEC extends CLI {
   protected function setup($options) {
     $options->setHelp('A PHP Command Line tool that makes it easy to compile, concat, and minify front-end Javascript and CSS/SCSS dependencies.');
+
     $options->registerOption('css-output', 'Destination CSS file. (Only used when files are passed, otherwise files are not concated and original filenames are used)', 'c', true);
     $options->registerOption('js-output', 'Destination JavaScript file. (Only used when files are passed, otherwise files are not concated and original filenames are used)', 'j', true);
     $options->registerOption('path', 'Path to the fec.json file. (Only used when no files are passed)', 'p', true);
+    $options->registerOption('scss-import-path', 'Directory path to include when locating imported SCSS files. (Define multiple directories by seperating them with commas)', 's', true);
   }
 
   protected function main($options) {
     $files = $options->getArgs();
     $path_opt = $options->getOpt('path');
+    $scss_import_paths = explode(',', $options->getOpt('scss-import-path', array()));
     $path = '.';
     $json_file = null;
     $css_files = array();
@@ -113,7 +116,7 @@ class FEC extends CLI {
 
             if ($ext === 'scss') {
               $scss_compiler = new ScssCompiler();
-              $scss_compiler->setImportPaths(array(dirname($file)));
+              $scss_compiler->setImportPaths(array_merge(array(dirname($file)), $scss_import_paths));
               $scss = file_get_contents($file);
               $css = $scss_compiler->compileString($scss)->getCss();
 
