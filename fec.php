@@ -17,7 +17,7 @@ class FEC extends CLI {
     $files = $options->getArgs();
     $compress = $options->getOpt('compress', false);
     $path_opt = $options->getOpt('path');
-    $scss_import_paths = explode(',', $options->getOpt('scss-import-path', array()));
+    $scss_import_paths = explode(',', $options->getOpt('scss-import-path') ?: '');
     $path = '.';
     $json_file = null;
     $css_files = array();
