@@ -37,7 +37,7 @@ class FEC extends CLI {
         if (file_exists($json_file)) {
           $json = @file_get_contents($json_file);
         } else {
-          $this->print("<lightred>Error</lightred>: Could not find <yellow>$json_file</yellow>.");
+          $this->print("<lightred>Error</lightred>: Could not find <yellow>$json_file</yellow>.", STDERR);
           return;
         }
       } elseif (file_exists("$path/fec.json")) {
@@ -45,17 +45,17 @@ class FEC extends CLI {
       } elseif (file_exists("$path/gpm.json")) {
         $json = @file_get_contents("$path/gpm.json");
       } else {
-        $this->print("<lightred>Error</lightred>: Could not find <yellow>$path/fec.json</yellow> or <yellow>$path/gpm.json</yellow>.");
+        $this->print("<lightred>Error</lightred>: Could not find <yellow>$path/fec.json</yellow> or <yellow>$path/gpm.json</yellow>.", STDERR);
         return;
       }
 
       if (!($info = @json_decode($json, true))) {
-        $this->print("<lightred>Error</lightred>: An error occured while decoding JSON data.");
+        $this->print("<lightred>Error</lightred>: An error occured while decoding JSON data.", STDERR);
         return;
       }
 
       if (!isset($info['compile']) || !is_array($info['compile'])) {
-        $this->print("<lightred>Error</lightred>: JSON data does not contain a compile item.");
+        $this->print("<lightred>Error</lightred>: JSON data does not contain a compile item.", STDERR);
         return;
       }
 
