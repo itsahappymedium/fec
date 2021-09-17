@@ -6,7 +6,7 @@ use splitbrain\phpcli\CLI;
 class FEC extends CLI {
   protected function setup($options) {
     $options->setHelp('A PHP Command Line tool that makes it easy to compile, concat, and minify front-end Javascript and CSS/SCSS dependencies.');
-
+    $options->registerOption('compress', 'Additionally compresses the minified files by removing all comments and line breaks.', 'x', false);
     $options->registerOption('css-output', 'Destination CSS file. (Only used when files are passed, otherwise files are not concated and original filenames are used)', 'c', true);
     $options->registerOption('js-output', 'Destination JavaScript file. (Only used when files are passed, otherwise files are not concated and original filenames are used)', 'j', true);
     $options->registerOption('path', 'Path to the fec.json file. (Only used when no files are passed)', 'p', true);
@@ -15,6 +15,7 @@ class FEC extends CLI {
 
   protected function main($options) {
     $files = $options->getArgs();
+    $compress = $options->getOpt('compress', false);
     $path_opt = $options->getOpt('path');
     $scss_import_paths = explode(',', $options->getOpt('scss-import-path', array()));
     $path = '.';
@@ -130,6 +131,15 @@ class FEC extends CLI {
         $dest = "$path/$dest";
         $this->print(" - <cyan>Minifying</cyan> <brown>$dest</brown>...");
         $css_minifier->minify($dest);
+
+        if ($compress) {
+          $css = file_get_contents($dest);
+
+          $css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css); // Remove comments
+          $css = preg_replace('/\n/', '', $css); // Remove line breaks
+
+          file_put_contents($dest, $css);
+        }
       }
     }
 
@@ -151,6 +161,14 @@ class FEC extends CLI {
         $dest = "$path/$dest";
         $this->print(" - <cyan>Minifying</cyan> <brown>$dest</brown>...");
         $js_minifier->minify($dest);
+
+        if ($compress) {
+          $js = file_get_contents($dest);
+
+          $js = preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\'|\")\/\/.*))/', '', $js); // Remove comments
+
+          file_put_contents($dest, $js);
+        }
       }
     }
 

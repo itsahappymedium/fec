@@ -61,6 +61,8 @@ The `--js-output` or `-j` option can be passed to define the file where JavaScri
 
 The `--scss-import-path` or `-s` option can be passed to include additional directory paths to locate imported SCSS files. Separate multiple directories with a comma (,).
 
+The `--compress` or `-x` option can be passed to additionally compress the minified files by removing all comments and line breaks.
+
 
 ### Examples
 
