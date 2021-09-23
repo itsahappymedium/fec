@@ -80,7 +80,9 @@ You can set the `scss-import-path` and/or `compress` options by defining them in
 ```json
 {
   "compile": {
-    ...
+    "css": {
+      "build/main.min.css": "scss/main.scss"
+    }
   },
   "settings": {
     "fec": {
