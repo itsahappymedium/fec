@@ -30,7 +30,7 @@ fec help
 
 Running FEC without any arguments will load files from a `fec.json` file (and if that doesn't exist, `gpm.json`) that is structured like so:
 
-```js
+```json
 {
   "compile": {
     "css": {
@@ -71,6 +71,27 @@ fec --js-output build/main.min.js js/*.js
 
 fec --css-output build/main.min.css --js-output build/main.min.js scss/*.scss js/*.js
 ```
+
+
+### Defining Settings with JSON
+
+You can set the `scss-import-path` and/or `compress` options by defining them in your JSON file like so:
+
+```json
+{
+  "compile": {
+    ...
+  },
+  "settings": {
+    "fec": {
+      "compress": true,
+      "scss-import-path": "gpm_modules"
+    }
+  }
+}
+```
+
+The `scss-import-path` setting accepts a string or an array of strings, these paths are relative to the location of the JSON file.
 
 
 ## Related

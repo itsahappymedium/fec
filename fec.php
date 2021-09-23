@@ -63,6 +63,26 @@ class FEC extends CLI {
 
       if (isset($compile['css'])) $css_files = $compile['css'];
       if (isset($compile['js'])) $js_files = $compile['js'];
+
+      if (isset($info['settings']) && isset($info['settings']['fec'])) {
+        $settings = $info['settings']['fec'];
+
+        if (isset($settings['compress'])) $compress = $settings['compress'];
+
+        if (isset($settings['scss-import-path'])) {
+          if (is_array($settings['scss-import-path'])) {
+            $settings_scss_import_paths = $settings['scss-import-path'];
+          } else {
+            $settings_scss_import_paths = explode(',', $settings['scss-import-path']);
+          }
+
+          array_walk($settings_scss_import_paths, function (&$path, $idx, $prefix) {
+            $path = $prefix . '/' . ltrim($path, '/');
+          }, $path);
+
+          $scss_import_paths = array_merge($scss_import_paths, $settings_scss_import_paths);
+        }
+      }
     } else {
       $css_source_files = array_filter($files, function($file) {
         return preg_match('/\.s?css$/', $file);
