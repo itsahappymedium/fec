@@ -14,7 +14,7 @@ The [minify](https://github.com/matthiasmullie/minify) and [scssphp](https://git
 ### To a package (local)
 
 ```
-composer require itsahappymedium/fec
+composer require-dev itsahappymedium/fec
 ./vendor/bin/fec help
 ```
 
