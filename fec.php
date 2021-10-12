@@ -42,10 +42,8 @@ class FEC extends CLI {
         }
       } elseif (file_exists("$path/fec.json")) {
         $json = @file_get_contents("$path/fec.json");
-      } elseif (file_exists("$path/gpm.json")) {
-        $json = @file_get_contents("$path/gpm.json");
       } else {
-        $this->print("<lightred>Error</lightred>: Could not find <yellow>$path/fec.json</yellow> or <yellow>$path/gpm.json</yellow>.", STDERR);
+        $this->print("<lightred>Error</lightred>: Could not find <yellow>$path/fec.json</yellow>.", STDERR);
         return;
       }
 

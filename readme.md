@@ -28,7 +28,7 @@ fec help
 
 ## Usage
 
-Running FEC without any arguments will load files from a `fec.json` file (and if that doesn't exist, `gpm.json`) that is structured like so:
+Running FEC without any arguments will load files from a `fec.json` file that is structured like so:
 
 ```json
 {
@@ -51,7 +51,7 @@ Running FEC without any arguments will load files from a `fec.json` file (and if
 }
 ```
 
-The `--path` or `-p` option can be passed to define a JSON file or a directory path to where a `fec.json` or `gpm.json` file is located to load a file list from.
+The `--path` or `-p` option can be passed to define a JSON file or a directory path to where a `fec.json` file is located to load a file list from.
 
 File paths can be passed to FEC to compile those specific files.
 
