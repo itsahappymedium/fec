@@ -1,0 +1,13 @@
+{
+  "compile": {
+    "css": {
+      "../../tmp/output2.min.css": "input.scss"
+    },
+    "js": {
+      "../../tmp/output2.min.js": [
+        "input.js",
+        "input2.js"
+      ]
+    }
+  }
+}

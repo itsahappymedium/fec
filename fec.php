@@ -1,4 +1,5 @@
 <?php
+use Garfix\JsMinify\Minifier;
 use MatthiasMullie\Minify;
 use ScssPhp\ScssPhp\Compiler as ScssCompiler;
 use splitbrain\phpcli\CLI;
@@ -100,10 +101,10 @@ class FEC extends CLI {
       }
 
       $js_source_files = array_filter($files, function($file) {
-        return preg_match('/\.js\$/', $file);
+        return preg_match('/\.js$/', $file);
       });
 
-      if ($js_dest_file = $options->getOpt('css-output')) {
+      if ($js_dest_file = $options->getOpt('js-output')) {
         $js_files[$js_dest_file] = $js_source_files;
       } else {
         foreach($js_source_files as $js_source_file) {
@@ -148,22 +149,20 @@ class FEC extends CLI {
 
         $dest = "$path/$dest";
         $this->print(" - <cyan>Minifying</cyan> <brown>$dest</brown>...");
-        $css_minifier->minify($dest);
+        $compiled_css = $css_minifier->minify();
 
         if ($compress) {
-          $css = file_get_contents($dest);
-
-          $css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css); // Remove comments
-          $css = preg_replace('/\n/', '', $css); // Remove line breaks
-
-          file_put_contents($dest, $css);
+          $compiled_css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $compiled_css); // Remove comments
+          $compiled_css = preg_replace('/\n/', '', $compiled_css); // Remove line breaks
         }
+
+        file_put_contents($dest, $compiled_css);
       }
     }
 
     if (!empty($js_files)) {
       foreach($js_files as $dest => $sources) {
-        $js_minifier = new Minify\JS();
+        $js = '';
 
         if (!is_array($sources)) $sources = array($sources);
 
@@ -172,21 +171,20 @@ class FEC extends CLI {
 
           foreach($files as $file) {
             $this->print(" - <purple>Loading</purple> <brown>$file</brown>...");
-            $js_minifier->add($file);
+            $js .= "\n" . file_get_contents($file);
           }
         }
 
         $dest = "$path/$dest";
         $this->print(" - <cyan>Minifying</cyan> <brown>$dest</brown>...");
-        $js_minifier->minify($dest);
+        $compiled_js = Minifier::minify($js);
 
         if ($compress) {
-          $js = file_get_contents($dest);
-
-          $js = preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\'|\")\/\/.*))/', '', $js); // Remove comments
-
-          file_put_contents($dest, $js);
+          $compiled_js = preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\'|\")\/\/.*))/', '', $compiled_js); // Remove comments
+          $compiled_js = preg_replace('/^\n+|^[\t\s]*\n+/', '', $compiled_js); // Remove empty lines from removing comments
         }
+
+        file_put_contents($dest, $compiled_js);
       }
     }
 

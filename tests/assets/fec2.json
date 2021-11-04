@@ -1,0 +1,18 @@
+{
+  "compile": {
+    "css": {
+      "../../tmp/output2-compressed.min.css": "input.scss"
+    },
+    "js": {
+      "../../tmp/output2-compressed.min.js": [
+        "input.js",
+        "input2.js"
+      ]
+    }
+  },
+  "settings": {
+    "fec": {
+      "compress": true
+    }
+  }
+}
