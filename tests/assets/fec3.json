@@ -1,0 +1,7 @@
+{
+  "compile": {
+    "css": {
+      "yup.css": "nope.scss"
+    }
+  }
+}

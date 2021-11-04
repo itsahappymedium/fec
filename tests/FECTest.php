@@ -78,5 +78,40 @@ bye()})()";
 
     $this->assertEquals($js, $this->expected_js);
   }
+
+  /** @test */
+  public function invalid_json_source_css_file() {
+    $output = `./bin/fec --path ./tests/assets/fec3.json 2>&1`;
+
+    $this->assertEquals($output, "Could not find any CSS files matching nope.scss\n");
+  }
+
+  /** @test */
+  public function invalid_json_source_js_file() {
+    $output = `./bin/fec --path ./tests/assets/fec4.json 2>&1`;
+
+    $this->assertEquals($output, "Could not find any JS files matching nope.js\n");
+  }
+
+  /** @test */
+  public function invalid_inline_source_file() {
+    $output = `./bin/fec nope.txt 2>&1`;
+
+    $this->assertEquals($output, "Could not find any CSS or JS files matching nope.txt\n");
+  }
+
+  /** @test */
+  public function invalid_inline_css_source_file() {
+    $output = `./bin/fec nope.css 2>&1`;
+
+    $this->assertEquals($output, "Could not find any CSS files matching nope.css\n");
+  }
+
+  /** @test */
+  public function invalid_inline_js_source_file() {
+    $output = `./bin/fec nope.js 2>&1`;
+
+    $this->assertEquals($output, "Could not find any JS files matching nope.js\n");
+  }
 }
 ?>

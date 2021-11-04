@@ -93,6 +93,10 @@ class FEC extends CLI {
         foreach($css_source_files as $css_source_file) {
           $files = glob("$path/" . preg_replace('/^\.?\//', '', $css_source_file));
 
+          if (empty($files)) {
+            $this->fatal("Could not find any CSS files matching $css_source_file");
+          }
+
           foreach($files as $file) {
             $dest = preg_replace('/\.s?css$/', '.min.css', $file);
             $css_files[$dest] = $file;
@@ -110,11 +114,19 @@ class FEC extends CLI {
         foreach($js_source_files as $js_source_file) {
           $files = glob("$path/" . preg_replace('/^\.?\//', '', $js_source_file));
 
+          if (empty($files)) {
+            $this->fatal("Could not find any JS files matching $js_source_file");
+          }
+
           foreach($files as $file) {
             $dest = preg_replace('/\.js$/', '.min.js', $file);
             $js_files[$dest] = $file;
           }
         }
+      }
+
+      if (empty($css_files) && empty($js_files)) {
+        $this->fatal("Could not find any CSS or JS files matching " . implode(' ', $files));
       }
     }
 
@@ -127,23 +139,27 @@ class FEC extends CLI {
         foreach($sources as $source) {
           $files = glob("$path/" . preg_replace('/^\.?\//', '', $source));
 
-          foreach($files as $file) {
-            if (substr(basename($file), 0, 1) === '_') continue;
+          if (!empty($files)) {
+            foreach($files as $file) {
+              if (substr(basename($file), 0, 1) === '_') continue;
 
-            $this->print(" - <purple>Loading</purple> <brown>$file</brown>...");
+              $this->print(" - <purple>Loading</purple> <brown>$file</brown>...");
 
-            $ext = pathinfo($file, PATHINFO_EXTENSION);
+              $ext = pathinfo($file, PATHINFO_EXTENSION);
 
-            if ($ext === 'scss') {
-              $scss_compiler = new ScssCompiler();
-              $scss_compiler->setImportPaths(array_merge(array(dirname($file)), $scss_import_paths));
-              $scss = file_get_contents($file);
-              $css = $scss_compiler->compileString($scss)->getCss();
+              if ($ext === 'scss') {
+                $scss_compiler = new ScssCompiler();
+                $scss_compiler->setImportPaths(array_merge(array(dirname($file)), $scss_import_paths));
+                $scss = file_get_contents($file);
+                $css = $scss_compiler->compileString($scss)->getCss();
 
-              $css_minifier->add($css);
-            } else {
-              $css_minifier->add($file);
+                $css_minifier->add($css);
+              } else {
+                $css_minifier->add($file);
+              }
             }
+          } else {
+            $this->fatal("Could not find any CSS files matching $source");
           }
         }
 
@@ -169,9 +185,14 @@ class FEC extends CLI {
         foreach($sources as $source) {
           $files = glob("$path/" . preg_replace('/^\.?\//', '', $source));
 
-          foreach($files as $file) {
-            $this->print(" - <purple>Loading</purple> <brown>$file</brown>...");
-            $js .= "\n" . file_get_contents($file);
+          if (!empty($files)) {
+            foreach($files as $file) {
+              $this->print(" - <purple>Loading</purple> <brown>$file</brown>...");
+
+              $js .= "\n" . file_get_contents($file);
+            }
+          } else {
+            $this->fatal("Could not find any JS files matching $source");
           }
         }
 

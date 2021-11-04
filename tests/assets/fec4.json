@@ -1,0 +1,7 @@
+{
+  "compile": {
+    "js": {
+      "yup.js": "nope.js"
+    }
+  }
+}
