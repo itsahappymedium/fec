@@ -1,0 +1,12 @@
+{
+  "compile": {
+    "css": {
+      "../../tmp/output3.min.css": "input3.scss"
+    }
+  },
+  "settings": {
+    "fec": {
+      "scss-import-path": "includes"
+    }
+  }
+}

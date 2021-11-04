@@ -17,7 +17,8 @@ class FECTest extends TestCase {
   }
 
   public $comment = "/*! Comment */\n";
-  public $expected_css = ".red{color:red}.hello{content:\"World\"}";
+  public $expected_css = ".red{color:red}.hello .world{content:\"World\"}";
+  public $expected_css2 = "/*! Comment */\n.big{font-size:60px}\n/*! Comment */\n.bold{font-weight:700}";
   public $expected_js = "(function(){var hi='Hello World'
 function hello(){console.log(hi)}
 hello()})()
@@ -112,6 +113,22 @@ bye()})()";
     $output = `./bin/fec nope.js 2>&1`;
 
     $this->assertEquals($output, "Could not find any JS files matching nope.js\n");
+  }
+
+  /** @test */
+  public function scss_custom_import_path() {
+    $output = `./bin/fec --path ./tests/assets/fec5.json 2>&1`;
+    $css = file_get_contents('tmp/output3.min.css');
+
+    $this->assertEquals($css, $this->expected_css2);
+  }
+
+  /** @test */
+  public function scss_inline_custom_import_path() {
+    $output = `./bin/fec --scss-import-path ./tests/assets/includes --css-output ./tmp/output3-inline.min.css ./tests/assets/input3.scss 2>&1`;
+    $css = file_get_contents('tmp/output3-inline.min.css');
+
+    $this->assertEquals($css, $this->expected_css2);
   }
 }
 ?>

@@ -1,7 +1,8 @@
 /*! Comment */
-
 @import 'input2';
 
 .hello {
-  content: "World";
+  .world {
+    content: "World";
+  }
 }
