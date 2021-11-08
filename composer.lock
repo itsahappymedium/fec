@@ -4,47 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ce598073a84672cc5569c955bbde58b",
+    "content-hash": "29062eea40cdee57efe72da49f4dcc71",
     "packages": [
-        {
-            "name": "garfix/js-minify",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/garfix/js-minify.git",
-                "reference": "7e4cea7193d70d73c3da0c61017b90dcf8fb8730"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/garfix/js-minify/zipball/7e4cea7193d70d73c3da0c61017b90dcf8fb8730",
-                "reference": "7e4cea7193d70d73c3da0c61017b90dcf8fb8730",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^9.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Garfix\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Patrick van Bergen",
-                    "email": "patrick.vanbergen@gmail.com"
-                }
-            ],
-            "description": "A fast Javascript minifier that removes unnecessary whitespace and comments",
-            "time": "2021-10-11T18:48:57+00:00"
-        },
         {
             "name": "matthiasmullie/minify",
             "version": "1.3.66",

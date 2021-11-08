@@ -1,5 +1,4 @@
 <?php
-use Garfix\JsMinify\Minifier;
 use MatthiasMullie\Minify;
 use ScssPhp\ScssPhp\Compiler as ScssCompiler;
 use splitbrain\phpcli\CLI;
@@ -214,7 +213,7 @@ class FEC extends CLI {
 
     if (!empty($js_files)) {
       foreach($js_files as $dest => $sources) {
-        $js = '';
+        $js_minifier = new Minify\JS();
 
         if (!is_array($sources)) $sources = array($sources);
 
@@ -224,8 +223,7 @@ class FEC extends CLI {
           if (!empty($files)) {
             foreach($files as $file) {
               $this->print(" - <purple>Loading</purple> <brown>$file</brown>...");
-
-              $js .= "\n" . file_get_contents($file);
+              $js_minifier->add($file);
             }
           } else {
             $this->fatal("Could not find any JS files matching $source");
@@ -234,7 +232,7 @@ class FEC extends CLI {
 
         $dest = "$path/$dest";
         $this->print(" - <cyan>Minifying</cyan> <brown>$dest</brown>...");
-        $compiled_js = Minifier::minify($js);
+        $compiled_js = $js_minifier->minify();
 
         if ($compress) {
           $compiled_js = preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\'|\")\/\/.*))/', '', $compiled_js); // Remove comments

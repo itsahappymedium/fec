@@ -21,8 +21,7 @@ class FECTest extends TestCase {
   public $expected_css2 = "/*! Comment */\n.big{font-size:60px}\n/*! Comment */\n.bold{font-weight:700}";
   public $expected_js = "(function(){var hi='Hello World'
 function hello(){console.log(hi)}
-hello()})()
-(function(){var bye='Goodbye World'
+hello()})();(function(){var bye='Goodbye World'
 function goodbye(){console.log(bye)}
 bye()})()";
 
