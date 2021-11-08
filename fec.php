@@ -149,7 +149,43 @@ class FEC extends CLI {
 
               if ($ext === 'scss') {
                 $scss_compiler = new ScssCompiler();
-                $scss_compiler->setImportPaths(array_merge(array(dirname($file)), $scss_import_paths));
+                $import_paths = array_merge(array(dirname($file)), array_filter($scss_import_paths));
+
+                $scss_compiler->addImportPath(function($path) use($import_paths) {
+                  $new_path = null;
+
+                  if (ScssCompiler::isCssImport($path)) {
+                    return null;
+                  }
+
+                  foreach($import_paths as $import_path) {
+                    $check_path = $import_path . '/' . $path;
+                    $import_dir_name = dirname($check_path);
+                    $import_file_name = basename($check_path);
+
+
+                    foreach(array('', '.scss', '.css') as $ext) {
+                      if (file_exists($import_dir_name . '/' . $import_file_name . $ext)) {
+                        $new_path = $import_dir_name . '/' . $import_file_name . $ext;
+                        break;
+                      } elseif (file_exists($import_dir_name . '/_' . $import_file_name . $ext)) {
+                        $new_path = $import_dir_name . '/_' . $import_file_name . $ext;
+                        break;
+                      }
+                    }
+                  }
+
+                  if ($new_path) {
+                    $this->print(" - <purple>Loading</purple> <brown>$new_path</brown>...");
+
+                    return $new_path;
+                  } else {
+                    $this->fatal("Could not find any CSS files matching $path");
+                  }
+
+                  return null;
+                });
+
                 $scss = file_get_contents($file);
                 $css = $scss_compiler->compileString($scss)->getCss();
 
