@@ -51,20 +51,27 @@ Running FEC without any arguments will load files from a `fec.json` file that is
 }
 ```
 
-The `--path` or `-p` option can be passed to define a JSON file or a directory path to where a `fec.json` file is located to load a file list from.
+
+### Options
 
 File paths can be passed to FEC to compile those specific files.
 
-The `--css-output` or `-c` option can be passed to define the file where CSS/SCSS input files will be concated and minified into otherwise if this option isn't used, CSS/SCSS files will all be concated and minified into their own individual filenames with their extension changed to `.min.css`.
+  - `--css--output` / `-c` - Define the path to a single file to concat all CSS/SCSS files into one file, or define a path to a directory to process each file individually with the `.min.css` extension.
 
-The `--js-output` or `-j` option can be passed to define the file where JavaScript input files will be concated and minified into otherwise if this option isn't used, JavaScript files will all be concated and minified into their own individual filenames with their extension changed to `.min.js`.
+  - `--js--output` / `-j` - Define the path to a single file to concat all JS files into one file, or define a path to a directory to process each file individually with the `.min.js` extension.
 
-The `--scss-import-path` or `-s` option can be passed to include additional directory paths to locate imported SCSS files. Separate multiple directories with a comma (,).
+  - `--no-minify` / `-n` - Don't do any minification, just concat files.
 
-The `--compress` or `-x` option can be passed to additionally compress the minified files by removing all comments and line breaks.
+  - `--path` / `-p` - Defines a path to either a JSON file, or a directory where a `fec.json` file is located.
+
+  - `--remove-important-comments` / `-r` - Remove all comments, including those that are marked as important. This option also accepts a file name, or the last part of it's file path to only remove important comments from that file. You can also prepend the file name with a `!` to remove important comments from all files but that file. You can pass multiple files by separating them with a comma (`,`).
+
+  - `--scss-import-path` / `-s` -  Define an additional path to check for SCSS imports in. You can pass multiple paths by separating them with a comma (`,`).
+
+  - `--watcher` / `-w` - Define a path to point the [EventSource](https://developer.mozilla.org/en-US/docs/Web/API/EventSource) to that will be injected into your JavaScript so that the page is refreshed when files are updated while running the `watch` command. (See `watch` command section below for more information)
 
 
-### Examples
+#### Examples
 
 ```
 fec --js-output build/main.min.js js/*.js
@@ -73,9 +80,38 @@ fec --css-output build/main.min.css --js-output build/main.min.js scss/*.scss js
 ```
 
 
+### The `watch` command
+
+Starts a process that watches for file changes and recompiles them as needed. This command will do an initial compile just to make sure everything is up to date.
+
+
+#### The Watcher
+
+FEC has the ability to automatically refresh your website while running the `watch` command (much like how [Browsersync](https://github.com/Browsersync/browser-sync) works). Simply create a `watcher.php` (or whatever you want to call it) somewhere that is accessible by your website, and place the following code in there:
+
+```php
+<?php
+require_once('./vendor/autoload.php');
+new FEC_Watcher(array(
+  'build/main.min.js' => 'build/main.min.css'
+), 'content/themes/my-theme');
+?>
+```
+
+The `FEC_Watcher` class accepts two parameters:
+
+ - `$files` (`String/Array`) - Should be passed the path to a JavaScript file that FEC will generate or an `Array` of JavaScript files. These files will have JavaScript injected into them by FEC to listen for changes. The array can also be multidimensional using the JavaScript file as the keys and additional files to watch for updates as the value (which accepts a `String` or an `Array` of Strings).
+
+ - `$path` (`String`) - All paths used in the `$files` parameter should be relative to where the watcher script is placed. You can define a path with this parameter to prepend to all files listed in the `$files` parameter.
+
+Last, but not least, you will need to set the `--watcher` option to the path where the watcher script is accessible on the server.
+
+If a watcher is used, your files will be recompiled one last time after you are done to remove the injected JavaScript.
+
+
 ### Defining Settings with JSON
 
-You can set the `scss-import-path` and/or `compress` options by defining them in your JSON file like so:
+You can set most options above by defining them as settings in your JSON file like so:
 
 ```json
 {
@@ -87,7 +123,9 @@ You can set the `scss-import-path` and/or `compress` options by defining them in
   "settings": {
     "fec": {
       "compress": true,
-      "scss-import-path": "gpm_modules"
+      "remove-important-comments": true,
+      "scss-import-path": "gpm_modules",
+      "watcher": "/watcher.php"
     }
   }
 }

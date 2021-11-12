@@ -12,7 +12,7 @@
   },
   "settings": {
     "fec": {
-      "compress": true
+      "remove-important-comments": true
     }
   }
 }

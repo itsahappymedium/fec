@@ -19,6 +19,7 @@ class FECTest extends TestCase {
   public $comment = "/*! Comment */\n";
   public $expected_css = ".red{color:red}.hello .world{content:\"World\"}";
   public $expected_css2 = "/*! Comment */\n.big{font-size:60px}\n/*! Comment */\n.bold{font-weight:700}";
+  public $expected_css3 = ".big{font-size:60px}.bold{font-weight:700}\n/*! Comment */\n.red{color:red}.hello .world{content:\"World\"}";
   public $expected_js = "(function(){var hi='Hello World'
 function hello(){console.log(hi)}
 hello()})();(function(){var bye='Goodbye World'
@@ -65,7 +66,7 @@ bye()})()";
 
   /** @test */
   public function compressed_css_test() {
-    $output = `./bin/fec --compress --css-output ./tmp/output-compressed.min.css ./tests/assets/input.scss 2>&1`;
+    $output = `./bin/fec --remove-important-comments --css-output ./tmp/output-compressed.min.css ./tests/assets/input.scss 2>&1`;
     $css = file_get_contents('tmp/output-compressed.min.css');
 
     $this->assertEquals($css, $this->expected_css);
@@ -73,9 +74,20 @@ bye()})()";
 
   /** @test */
   public function compressed_js_test() {
-    $output = `./bin/fec --compress --js-output ./tmp/output-compressed.min.js ./tests/assets/input.js ./tests/assets/input2.js 2>&1`;
+    $output = `./bin/fec --remove-important-comments --js-output ./tmp/output-compressed.min.js ./tests/assets/input.js ./tests/assets/input2.js 2>&1`;
     $js = file_get_contents('tmp/output-compressed.min.js');
 
+    $this->assertEquals($js, $this->expected_js);
+  }
+
+  /** @test */
+  public function compressed_json_defined_test() {
+    $output = `./bin/fec --path ./tests/assets/fec6.json 2>&1`;
+
+    $css = file_get_contents('tmp/output4.min.css');
+    $js = file_get_contents('tmp/output4.min.js');
+
+    $this->assertEquals($css, $this->expected_css3);
     $this->assertEquals($js, $this->expected_js);
   }
 

@@ -1,0 +1,26 @@
+{
+  "compile": {
+    "css": {
+      "../../tmp/output4.min.css": [
+        "input3.scss",
+        "input.scss"
+      ]
+    },
+    "js": {
+      "../../tmp/output4.min.js": [
+        "input.js",
+        "input2.js"
+      ]
+    }
+  },
+  "settings": {
+    "fec": {
+      "remove-important-comments": [
+        ".scss",
+        "!input.scss",
+        "input.js"
+      ],
+      "scss-import-path": "includes"
+    }
+  }
+}

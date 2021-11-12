@@ -2,6 +2,7 @@
   "name": "itsahappymedium/fec",
   "description": "A PHP Command Line tool that makes it easy to compile, concat, and minify front-end Javascript and CSS/SCSS dependencies.",
   "keywords": [
+    "browsersync",
     "cli",
     "css",
     "compile",
@@ -10,7 +11,8 @@
     "minify",
     "javascript",
     "js",
-    "scss"
+    "scss",
+    "watch"
   ],
   "authors": [
     {
@@ -29,6 +31,11 @@
   "bin": [
     "bin/fec"
   ],
+  "autoload": {
+    "files": [
+      "watcher.php"
+    ]
+  },
   "scripts": {
     "test": "vendor/bin/phpunit tests"
   },
