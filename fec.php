@@ -139,6 +139,8 @@ class FEC extends CLI {
       $compiled_css = preg_replace('/(.+)(\/\*!.*)/', "$1\n$2", $compiled_css); // Make sure important comments start on their own line
     }
 
+    $this->create_directory(dirname($dest));
+
     file_put_contents($dest, $compiled_css);
   }
 
@@ -201,7 +203,29 @@ class FEC extends CLI {
       $compiled_js = preg_replace('/^\n+|^[\t\s]*\n+/', '', $compiled_js); // Remove extra line breaks
     }
 
+    $this->create_directory(dirname($dest));
+
     file_put_contents($dest, $compiled_js);
+  }
+
+  protected function create_directory($directory) {
+    $directories = array_values(array_filter(explode('/', $directory)));
+
+    if (substr($directory, 0, 1) === '/') $directories[0] = '/' . $directories[0];
+
+    foreach($directories as $i => $dir) {
+      $path = implode('/', array_slice($directories, 0, ($i + 1)));
+
+      if (!file_exists($path)) {
+        if (!@mkdir($path)) {
+          $this->print("<lightred>Error</lightred>: An error occured while attempting to create <yellow>$path</yellow> directory.", STDERR);
+
+          if (!$this->ignore_errors) {
+            exit(1);
+          }
+        }
+      }
+    }
   }
 
   protected function setupOpts($options) {
