@@ -72,7 +72,7 @@ class FEC extends CLI {
 
       if ($ext === 'scss') {
         $scss_compiler = new ScssCompiler();
-        $import_paths = array_merge(array(dirname($source)), $this->scss_import_paths);
+        $import_paths = array_merge(array(dirname($source)), $this->scss_import_paths, array(getcwd(), $this->path));
 
         $scss_compiler->addImportPath(function($path) use($import_paths, $dest) {
           $new_path = null;
@@ -85,14 +85,24 @@ class FEC extends CLI {
             $check_path = $import_path . '/' . $path;
             $import_dir_name = dirname($check_path);
             $import_file_name = basename($check_path);
-
+            $check_files = array();
 
             foreach(array('', '.scss', '.css') as $ext) {
-              if (file_exists($import_dir_name . '/' . $import_file_name . $ext)) {
-                $new_path = $import_dir_name . '/' . $import_file_name . $ext;
-                break;
-              } elseif (file_exists($import_dir_name . '/_' . $import_file_name . $ext)) {
-                $new_path = $import_dir_name . '/_' . $import_file_name . $ext;
+              $check_files = array_merge($check_files, array(
+                $import_file_name . $ext,
+                '_' . $import_file_name . $ext,
+                $import_file_name . '/' . $import_file_name . $ext,
+                $import_file_name . '/_' . $import_file_name . $ext,
+                $import_file_name . '/index' . $ext,
+                $import_file_name . '/_index' . $ext
+              ));
+            }
+
+            foreach($check_files as $file) {
+              $file = $import_dir_name . '/' . $file;
+
+              if (file_exists($file) && !is_dir($file)) {
+                $new_path = $file;
                 break;
               }
             }
